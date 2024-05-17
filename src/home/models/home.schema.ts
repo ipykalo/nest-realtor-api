@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { PropertyType } from '../enums/propertry-type.enum';
+import { PropertyType } from '../enums/property-type.enum';
+import { Image } from './image.schema';
 
 @Schema()
 export class Home {
@@ -15,9 +16,6 @@ export class Home {
   @Prop({ type: String })
   city: string;
 
-  @Prop({ type: Date })
-  createTs: Date;
-
   @Prop({ type: Number })
   price: number;
 
@@ -27,7 +25,14 @@ export class Home {
   @Prop({ type: String, enum: PropertyType })
   propertyType: PropertyType;
 
-  _id?: string;
+  @Prop({ type: [Image], _id: false })
+  image: Image[];
+
+  @Prop({ type: Date, default: new Date() })
+  createTs: Date;
+
+  @Prop({ type: Date })
+  updateTs: Date;
 }
 
 export const HomeSchema = SchemaFactory.createForClass(Home);
