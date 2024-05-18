@@ -10,4 +10,17 @@ export class HomeService {
   getHomes() {
     return this.homeModel.find().exec();
   }
+
+  async create() {
+    return await this.homeModel.create({
+      address: 'Medova pechera',
+      bedrooms: 2,
+      bathrooms: 2,
+      city: 'Lviv',
+      price: 10000,
+      landSize: 2,
+      propertyType: 'RESIDENTIAL',
+      image: [{ url: 'some image' }],
+    });
+  }
 }

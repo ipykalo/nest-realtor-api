@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { UserType } from '../enums/user-type.enum';
-import { Home } from './home.schema';
 
 import mongoose from 'mongoose';
+import { Home } from '../../home/models/home.schema';
 
 @Schema()
 export class User {
