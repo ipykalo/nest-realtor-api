@@ -1,24 +1,19 @@
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-import { AuthRepository } from './auth.repository';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../shared/dtos/create-user.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private authRepository: AuthRepository) {}
+  constructor(private userService: UserService) {}
 
   async signUp(userDto: CreateUserDto) {
-    const user = await this.authRepository.findUserByEmail(userDto.email);
+    const user = await this.userService.getByEmail(userDto.email);
 
     if (user) {
       throw new ConflictException(
         `User with the email: ${userDto.email} already exists.`,
       );
     }
-    return this.authRepository.signUp(userDto);
+    return this.userService.create(userDto);
   }
 }
