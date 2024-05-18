@@ -1,10 +1,11 @@
-import { UserType } from '../enums/user-type.enum';
+import { UserType } from '../../user/enums/user-type.enum';
 
 import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
 
@@ -15,6 +16,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/^\+380\d{9}$/, {
+    message: 'phone number must be a valid phone (/^+380d{9}$/)',
+  })
   phone: string;
 
   @IsEmail()
