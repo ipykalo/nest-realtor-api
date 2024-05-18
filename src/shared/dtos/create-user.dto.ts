@@ -1,4 +1,4 @@
-import { UserType } from '../../user/enums/user-type.enum';
+import { UserType } from '../enums/user-type.enum';
 
 import {
   IsEmail,
