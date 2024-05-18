@@ -12,6 +12,10 @@ export class UserRepository {
     return this.userModel.find().populate('home').exec();
   }
 
+  getByEmail(email: string) {
+    return this.userModel.findOne({ email }).exec();
+  }
+
   async create(user: CreateUserDto) {
     return await this.userModel.create(user);
   }

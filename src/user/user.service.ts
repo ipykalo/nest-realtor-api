@@ -10,6 +10,10 @@ export class UserService {
     return this.userRepository.getUsers();
   }
 
+  getByEmail(email: string) {
+    return this.userRepository.getByEmail(email);
+  }
+
   async create(user: CreateUserDto) {
     return await this.userRepository.create(user);
   }

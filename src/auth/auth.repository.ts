@@ -9,4 +9,8 @@ export class AuthRepository {
   signUp(user: CreateUserDto) {
     return this.userService.create(user);
   }
+
+  findUserByEmail(email: string) {
+    return this.userService.getByEmail(email);
+  }
 }
