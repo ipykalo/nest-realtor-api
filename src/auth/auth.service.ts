@@ -1,6 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../shared/dtos/create-user.dto';
 import { UserService } from '../user/user.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,16 @@ export class AuthService {
         `User with the email: ${userDto.email} already exists.`,
       );
     }
-    return this.userService.create(userDto);
+    const hashPassword = await this.hashPasword(userDto.password);
+
+    return this.userService.create({
+      ...userDto,
+      password: hashPassword,
+    });
+  }
+
+  private async hashPasword(password: string): Promise<string> {
+    const saltOrRounds = 10;
+    return await bcrypt.hash(password, saltOrRounds);
   }
 }
