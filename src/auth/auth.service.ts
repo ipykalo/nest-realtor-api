@@ -7,12 +7,17 @@ import {
 import { CreateUserDto } from '../shared/dtos/create-user.dto';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { SigninResponseDto } from './dto/signin-response.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
-  async signIn(email: string, password: string) {
+  async signIn(email: string, password: string): Promise<SigninResponseDto> {
     const user = await this.userService.getByEmail(email);
 
     if (!user) {
@@ -27,7 +32,12 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    return user;
+    const payload = { sub: user.id, username: user.name };
+    const access_token = `Bearer ${await this.jwtService.signAsync(payload)}`;
+
+    return {
+      access_token,
+    };
   }
 
   async signUp(userDto: CreateUserDto) {
