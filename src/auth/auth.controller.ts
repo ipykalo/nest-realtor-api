@@ -4,6 +4,7 @@ import { CreateUserDto } from '../shared/dtos/create-user.dto';
 import { SigninRequestDto } from './dto/signin-request.dto';
 import { Public } from '../shared/decorators';
 import { SigninResponseDto } from './dto/signin-response.dto';
+import { GenerateProductKeyDto } from './dto/generate-product-key.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,13 +12,23 @@ export class AuthController {
 
   @Public()
   @Post('signin')
-  signIn(@Body() body: SigninRequestDto): Promise<SigninResponseDto> {
-    return this.authService.signIn(body.email, body.password);
+  signIn(
+    @Body() { email, password }: SigninRequestDto,
+  ): Promise<SigninResponseDto> {
+    return this.authService.signIn(email, password);
   }
 
   @Public()
   @Post('signup')
   signUp(@Body() body: CreateUserDto): Promise<SigninResponseDto> {
     return this.authService.signUp(body);
+  }
+
+  @Public()
+  @Post('product-key')
+  generateProductKey(
+    @Body() { email, userType }: GenerateProductKeyDto,
+  ): Promise<string> {
+    return this.authService.generateProductKey(email, userType);
   }
 }

@@ -3,6 +3,7 @@ import {
   HttpException,
   Injectable,
   HttpStatus,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from '../shared/dtos/create-user.dto';
 import { UserService } from '../user/user.service';
@@ -10,6 +11,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SigninResponseDto } from './dto/signin-response.dto';
 import { TokenPayload } from './interfaces/token-payload.interface';
+import { UserType } from 'src/shared';
+import { jwt } from './auth.constants';
 
 @Injectable()
 export class AuthService {
@@ -41,19 +44,36 @@ export class AuthService {
     };
   }
 
-  async signUp(userDto: CreateUserDto): Promise<SigninResponseDto> {
-    const existingUser = await this.userService.getByEmail(userDto.email);
+  async signUp(dto: CreateUserDto): Promise<SigninResponseDto> {
+    const existingUser = await this.userService.getByEmail(dto.email);
+
+    if (dto.userType !== UserType.BUYER) {
+      if (!dto.productKey) {
+        throw new UnauthorizedException();
+      }
+
+      const validProductKey = this.getProductKey(dto.email, dto.userType);
+
+      const isProductKeyMatches = await bcrypt.compare(
+        validProductKey,
+        dto.productKey,
+      );
+
+      if (!isProductKeyMatches) {
+        throw new UnauthorizedException();
+      }
+    }
 
     if (existingUser) {
       throw new ConflictException(
-        `User with the email: ${userDto.email} already exists.`,
+        `User with the email: ${dto.email} already exists.`,
       );
     }
-    const hashPassword = await this.hashPasword(userDto.password);
+    const hashedPassword = await this.hashByValue(dto.password);
 
     const user = await this.userService.create({
-      ...userDto,
-      password: hashPassword,
+      ...dto,
+      password: hashedPassword,
     });
 
     const access_token = await this.generateJwtToken({
@@ -66,10 +86,18 @@ export class AuthService {
     };
   }
 
-  private async hashPasword(password: string): Promise<string> {
-    const saltOrRounds = 10;
+  async generateProductKey(email: string, userType: UserType): Promise<string> {
+    const productKey = this.getProductKey(email, userType);
 
-    return await bcrypt.hash(password, saltOrRounds);
+    return await this.hashByValue(productKey);
+  }
+
+  private getProductKey(email: string, userType: UserType): string {
+    return `${email}-${userType}-${jwt.productKeySecret}`;
+  }
+
+  private async hashByValue(value: string): Promise<string> {
+    return await bcrypt.hash(value, jwt.hashSalt);
   }
 
   private async generateJwtToken(payload: TokenPayload): Promise<string> {

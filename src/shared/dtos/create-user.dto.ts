@@ -7,6 +7,7 @@ import {
   IsString,
   Matches,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -33,4 +34,9 @@ export class CreateUserDto {
   @IsEnum(UserType)
   @IsNotEmpty()
   userType: UserType;
+
+  @ValidateIf((dto) => dto.userType !== UserType.BUYER)
+  @IsString()
+  @IsNotEmpty()
+  productKey?: string;
 }
