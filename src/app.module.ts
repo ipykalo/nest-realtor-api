@@ -6,12 +6,26 @@ import { HomeModule } from './home/home.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
-
-const uri =
-  'mongodb+srv://ivan:12345@cluster0.thvugus.mongodb.net/realtor?retryWrites=true&w=majority&appName=Cluster0';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [MongooseModule.forRoot(uri), HomeModule, UserModule, AuthModule, SharedModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: './config/.env',
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_DB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    HomeModule,
+    UserModule,
+    AuthModule,
+    SharedModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

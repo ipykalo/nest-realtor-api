@@ -12,13 +12,14 @@ import { JwtService } from '@nestjs/jwt';
 import { SigninResponseDto } from './dto/signin-response.dto';
 import { TokenPayload } from './interfaces/token-payload.interface';
 import { UserType } from 'src/shared';
-import { jwt } from './auth.constants';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async signIn(email: string, password: string): Promise<SigninResponseDto> {
@@ -93,11 +94,16 @@ export class AuthService {
   }
 
   private getProductKey(email: string, userType: UserType): string {
-    return `${email}-${userType}-${jwt.productKeySecret}`;
+    const productKeySecret =
+      this.configService.get<string>('PRODUCT_KEY_SECRET');
+
+    return `${email}-${userType}-${productKeySecret}`;
   }
 
   private async hashByValue(value: string): Promise<string> {
-    return await bcrypt.hash(value, jwt.hashSalt);
+    const hashSalt = this.configService.get<string>('HASH_SALT');
+
+    return await bcrypt.hash(value, +hashSalt);
   }
 
   private async generateJwtToken(payload: TokenPayload): Promise<string> {
