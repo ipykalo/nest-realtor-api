@@ -2,25 +2,30 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Home } from './models/home.schema';
+import { HomeResponseDto } from './dtos/home-response.dto';
+import { HomeRequestDto } from './dtos/home-request.dto';
 
 @Injectable()
 export class HomeRepository {
   constructor(@InjectModel(Home.name) private homeModel: Model<Home>) {}
 
-  getHomes() {
+  getHomes(): Promise<HomeResponseDto[]> {
     return this.homeModel.find().exec();
   }
 
-  async create() {
-    return await this.homeModel.create({
-      address: 'Medova pechera',
-      bedrooms: 2,
-      bathrooms: 2,
-      city: 'Lviv',
-      price: 10000,
-      landSize: 2,
-      propertyType: 'RESIDENTIAL',
-      image: [{ url: 'some image' }],
-    });
+  getHome(_id: string): Promise<HomeResponseDto> {
+    return this.homeModel.findOne({ _id }, null, { lean: true }).exec();
+  }
+
+  create(home: HomeRequestDto): Promise<HomeResponseDto> {
+    return this.homeModel.create(home);
+  }
+
+  updateOne(_id: string, home: HomeRequestDto): Promise<HomeResponseDto> {
+    return this.homeModel.findByIdAndUpdate(_id, home, { new: true }).exec();
+  }
+
+  deleteOne(_id: string): Promise<HomeResponseDto> {
+    return this.homeModel.findOneAndDelete({ _id }).exec();
   }
 }

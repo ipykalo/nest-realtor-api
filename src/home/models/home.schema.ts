@@ -33,6 +33,8 @@ export class Home {
 
   @Prop({ type: Date })
   updateTs: Date;
+
+  _id?: string;
 }
 
 export const HomeSchema = SchemaFactory.createForClass(Home);

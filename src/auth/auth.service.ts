@@ -9,7 +9,7 @@ import { CreateUserDto } from '../shared/dtos/create-user.dto';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { SigninResponseDto } from './dto/signin-response.dto';
+import { SigninResponseDto } from './dtos/signin-response.dto';
 import { TokenPayload } from './interfaces/token-payload.interface';
 import { UserType } from 'src/shared';
 import { ConfigService } from '@nestjs/config';
