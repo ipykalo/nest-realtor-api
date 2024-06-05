@@ -16,4 +16,5 @@ export interface Home {
   image: Image[];
   createTs: Date;
   updateTs: Date;
+  realtorId: string;
 }

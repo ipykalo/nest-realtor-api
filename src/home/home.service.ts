@@ -26,7 +26,7 @@ export class HomeService {
       throw new NotFoundException('Home not found.');
     }
 
-    return await this.homeRepository.updateOne(id, {
+    return this.homeRepository.updateOne(id, {
       ...oldHome,
       ...home,
     });

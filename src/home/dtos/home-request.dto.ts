@@ -9,7 +9,7 @@ import {
 import { PropertyType } from '../enums/property-type.enum';
 import { Home, Image } from '../interfaces/home.intreface';
 
-type CreateHome = Omit<Home, 'createTs' | 'updateTs'>;
+type CreateHome = Omit<Home, 'createTs' | 'updateTs' | 'realtorId'>;
 
 export class ImageDto implements Image {
   @IsString()

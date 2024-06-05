@@ -34,6 +34,9 @@ export class Home {
   @Prop({ type: Date })
   updateTs: Date;
 
+  @Prop({ type: String })
+  realtorId: string;
+
   _id?: string;
 }
 

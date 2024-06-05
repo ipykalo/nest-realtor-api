@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { PropertyType } from '../enums/property-type.enum';
 import { Home, Image } from '../interfaces/home.intreface';
 
@@ -30,9 +30,16 @@ export class HomeResponseDto implements Home {
   @Expose()
   image: Image[];
 
-  @Expose()
+  @Exclude()
   createTs: Date;
 
-  @Expose()
+  @Exclude()
   updateTs: Date;
+
+  @Exclude()
+  realtorId: string;
+
+  constructor(dto: Partial<HomeResponseDto>) {
+    Object.assign(this, dto);
+  }
 }
