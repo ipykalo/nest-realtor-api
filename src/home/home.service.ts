@@ -2,13 +2,24 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { HomeRepository } from './home.repository';
 import { HomeResponseDto } from './dtos/home-response.dto';
 import { HomeRequestDto } from './dtos/home-request.dto';
+import { FilterHomes } from './interfaces/filter-homes.interface';
 
 @Injectable()
 export class HomeService {
   constructor(private homeRepository: HomeRepository) {}
 
-  getHomes(): Promise<HomeResponseDto[]> {
-    return this.homeRepository.getHomes();
+  getHomes({
+    city,
+    maxPrice,
+    minPrice,
+    propertyType,
+  }: FilterHomes): Promise<HomeResponseDto[]> {
+    return this.homeRepository.getHomes({
+      city,
+      maxPrice,
+      minPrice,
+      propertyType,
+    });
   }
 
   getHome(id: string): Promise<HomeResponseDto> {

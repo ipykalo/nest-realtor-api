@@ -4,13 +4,16 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { HomeService } from './home.service';
 import { HomeResponseDto } from './dtos/home-response.dto';
 import { HomeRequestDto } from './dtos/home-request.dto';
 import { Public, ResponseDto } from 'src/shared';
+import { PropertyType } from './enums/property-type.enum';
 
 @Controller('home')
 export class HomeController {
@@ -19,8 +22,18 @@ export class HomeController {
   @Public()
   @ResponseDto(HomeResponseDto)
   @Get()
-  getHomes(): Promise<HomeResponseDto[]> {
-    return this.homeService.getHomes();
+  getHomes(
+    @Query('city') city: string,
+    @Query('maxPrice') maxPrice: number,
+    @Query('minPrice') minPrice: number,
+    @Query('propertyType') propertyType: PropertyType,
+  ): Promise<HomeResponseDto[]> {
+    return this.homeService.getHomes({
+      city,
+      maxPrice: +maxPrice,
+      minPrice: +minPrice,
+      propertyType,
+    });
   }
 
   @Public()

@@ -4,13 +4,28 @@ import { Model } from 'mongoose';
 import { Home } from './models/home.schema';
 import { HomeResponseDto } from './dtos/home-response.dto';
 import { HomeRequestDto } from './dtos/home-request.dto';
+import { FilterHomes } from './interfaces/filter-homes.interface';
 
 @Injectable()
 export class HomeRepository {
   constructor(@InjectModel(Home.name) private homeModel: Model<Home>) {}
 
-  getHomes(): Promise<HomeResponseDto[]> {
-    return this.homeModel.find().exec();
+  getHomes({
+    city,
+    maxPrice,
+    minPrice,
+    propertyType,
+  }: FilterHomes): Promise<HomeResponseDto[]> {
+    return this.homeModel
+      .find({
+        $and: [
+          (city && { city }) || {},
+          (propertyType && { propertyType }) || {},
+          (maxPrice && { price: { $lte: maxPrice } }) || {},
+          (minPrice && { price: { $gte: minPrice } }) || {},
+        ],
+      })
+      .exec();
   }
 
   getHome(_id: string): Promise<HomeResponseDto> {
