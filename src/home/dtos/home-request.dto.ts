@@ -5,9 +5,11 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { PropertyType } from '../enums/property-type.enum';
 import { Home, Image } from '../interfaces/home.intreface';
+import { Type } from 'class-transformer';
 
 type CreateHome = Omit<Home, 'createTs' | 'updateTs' | 'realtorId'>;
 
@@ -46,6 +48,8 @@ export class HomeRequestDto implements CreateHome {
   @IsNotEmpty()
   propertyType: PropertyType;
 
-  @IsArray({ each: true })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageDto)
   image: ImageDto[];
 }
