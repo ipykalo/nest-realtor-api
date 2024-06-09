@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HomeRepository } from './home.repository';
 import { HomeResponseDto } from './dtos/home-response.dto';
-import { HomeRequestDto } from './dtos/home-request.dto';
+import { CreateHomeRequestDto } from './dtos/create-home-request.dto';
 import { FilterHomes } from './interfaces/filter-homes.interface';
+import { UpdateHomeRequestDto } from './dtos/update-home-request.dto';
 
 @Injectable()
 export class HomeService {
@@ -26,11 +27,14 @@ export class HomeService {
     return this.homeRepository.getHome(id);
   }
 
-  create(home: HomeRequestDto): Promise<HomeResponseDto> {
+  create(home: CreateHomeRequestDto): Promise<HomeResponseDto> {
     return this.homeRepository.create(home);
   }
 
-  async update(id: string, home: HomeRequestDto): Promise<HomeResponseDto> {
+  async update(
+    id: string,
+    home: UpdateHomeRequestDto,
+  ): Promise<HomeResponseDto> {
     const oldHome = await this.homeRepository.getHome(id);
 
     if (!oldHome) {

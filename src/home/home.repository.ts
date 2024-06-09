@@ -3,8 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Home } from './models/home.schema';
 import { HomeResponseDto } from './dtos/home-response.dto';
-import { HomeRequestDto } from './dtos/home-request.dto';
+import { CreateHomeRequestDto } from './dtos/create-home-request.dto';
 import { FilterHomes } from './interfaces/filter-homes.interface';
+import { UpdateHomeRequestDto } from './dtos/update-home-request.dto';
 
 @Injectable()
 export class HomeRepository {
@@ -32,11 +33,11 @@ export class HomeRepository {
     return this.homeModel.findOne({ _id }, null, { lean: true }).exec();
   }
 
-  create(home: HomeRequestDto): Promise<HomeResponseDto> {
+  create(home: CreateHomeRequestDto): Promise<HomeResponseDto> {
     return this.homeModel.create(home);
   }
 
-  updateOne(_id: string, home: HomeRequestDto): Promise<HomeResponseDto> {
+  updateOne(_id: string, home: UpdateHomeRequestDto): Promise<HomeResponseDto> {
     return this.homeModel.findByIdAndUpdate(_id, home, { new: true }).exec();
   }
 

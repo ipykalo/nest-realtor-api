@@ -11,9 +11,10 @@ import {
 } from '@nestjs/common';
 import { HomeService } from './home.service';
 import { HomeResponseDto } from './dtos/home-response.dto';
-import { HomeRequestDto } from './dtos/home-request.dto';
+import { CreateHomeRequestDto } from './dtos/create-home-request.dto';
 import { Public, ResponseDto } from 'src/shared';
 import { PropertyType } from './enums/property-type.enum';
+import { UpdateHomeRequestDto } from './dtos/update-home-request.dto';
 
 @Controller('home')
 export class HomeController {
@@ -46,7 +47,7 @@ export class HomeController {
   @Public()
   @ResponseDto(HomeResponseDto)
   @Post()
-  create(@Body() dto: HomeRequestDto): Promise<HomeResponseDto> {
+  create(@Body() dto: CreateHomeRequestDto): Promise<HomeResponseDto> {
     return this.homeService.create(dto);
   }
 
@@ -55,7 +56,7 @@ export class HomeController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() dto: HomeRequestDto,
+    @Body() dto: UpdateHomeRequestDto,
   ): Promise<HomeResponseDto> {
     return this.homeService.update(id, dto);
   }
